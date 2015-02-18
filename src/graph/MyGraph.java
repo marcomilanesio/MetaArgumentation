@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.awt.Dimension;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
@@ -56,6 +60,8 @@ public class MyGraph {
             public Paint transform(MyNode n) {
             	if (MetaArgument.class.isInstance(n.arg))
             		return Color.GRAY;
+            	if (n.arg.isAccepted())
+            		return Color.GREEN;
             	return Color.RED;
             }
         };  
@@ -71,6 +77,26 @@ public class MyGraph {
 		frame.getContentPane().add(vv);
 		frame.pack();
 		frame.setVisible(true); 
+		
+		try
+        {
+            BufferedImage image = new BufferedImage(vv.getWidth(), vv.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2D = image.createGraphics();
+            frame.paint(graphics2D);
+            ImageIO.write(image,"jpeg", new File("./results/"+label+".jpeg"));
+        }
+        catch(Exception exception)
+        {
+            System.out.println("Unable to save image");
+        }
+		
+	}
+
+	public void addResult(ArrayList<Argument> preferred) {
+		for (Argument a: preferred) {
+			a.setAccepted(true);
+		}
+		
 	}
 	
 }

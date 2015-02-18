@@ -37,13 +37,15 @@ public class MainClass {
 		MyGraph g = new MyGraph(conf);
 		g.visualize("init");
 		//System.exit(0);
-		conf.buildGraphicStrings(null);
-		buildGraph(conf.buildGraphicStrings(null), resultDir+"/InitialFramework");
+		//conf.buildGraphicStrings(null);
+		//buildGraph(conf.buildGraphicStrings(null), resultDir+"/InitialFramework");
 		String completeInputFile = conf.createCompleteInputFile();
 		MetaArgumentationFramework maf = new MetaArgumentationFramework(conf);
 		@SuppressWarnings("unchecked")
 		ArrayList<Argument> preferred = maf.computePreferredExtension(conargExe, completeInputFile);
-		buildGraph(conf.buildGraphicStrings(preferred), resultDir+"/EndingFramework");
+		g.addResult(preferred);
+		g.visualize("final");
+		//buildGraph(conf.buildGraphicStrings(preferred), resultDir+"/EndingFramework");
 	}		
 
 	private static void buildGraph(ArrayList<String> graphicString, String outFileName) 

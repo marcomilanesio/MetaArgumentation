@@ -11,6 +11,7 @@ public class Argument {
 	private final String shape;
 	private ArrayList<Argument> supported = new ArrayList<Argument>();
 	private double value;
+	private boolean accepted;
 
 	public Argument(String name, double d)
 	{
@@ -23,6 +24,7 @@ public class Argument {
 		this.setValue(d);
 		this.initialValue = d;
 		this.shape = shape;
+		this.accepted = false;
 	}
 
 	public void addAttack(Argument a)
@@ -85,5 +87,13 @@ public class Argument {
 //			sb.append(a.getName());
 //		}
 		return sb.toString();
+	}
+
+	public boolean isAccepted() {
+		return accepted;
+	}
+
+	public void setAccepted(boolean accepted) {
+		this.accepted = accepted;
 	}
 }
