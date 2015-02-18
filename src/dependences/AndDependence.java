@@ -15,7 +15,6 @@ public class AndDependence implements Dependence {
 		secondArg = arg2;
 	}
 	
-	@Override
 	public void buildDependence(int i)
 	{
 		t = new MetaArgument(labelStub+i);
@@ -23,7 +22,6 @@ public class AndDependence implements Dependence {
 		t.addAttack(secondArg);
 	}
 
-	@Override
 	public Argument[] getInvolvedArguments() {
 		Argument[] res = new Argument[3];
 		res[0] = firstArg;

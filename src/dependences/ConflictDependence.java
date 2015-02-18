@@ -19,7 +19,6 @@ public class ConflictDependence implements Dependence {
 		startNum = s;
 	}
 	
-	@Override
 	public void buildDependence(int i) {
 		MetaArgument x1 = new MetaArgument(labelStub1+startNum+"_"+i);
 		MetaArgument y1 = new MetaArgument(labelStub2+startNum+"_"+i);
@@ -42,7 +41,6 @@ public class ConflictDependence implements Dependence {
 		
 	}
 
-	@Override
 	public Argument[] getInvolvedArguments() {
 		Argument[] res = new Argument[2];
 		res[0] = firstArg;
