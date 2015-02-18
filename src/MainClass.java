@@ -1,4 +1,5 @@
-import java.awt.Dimension;
+import graph.MyGraph;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-
 
 import core.Configuration;
 import core.MetaArgumentationFramework;
@@ -33,7 +33,10 @@ public class MainClass {
 		String inputfileName = args[0];
 		String conargExe = "./conarg/conarg_gecode64";
 		ConfigurationParser c = new ConfigurationParser(inputfileName);
-		Configuration conf = c.buildConfiguration();
+		Configuration conf = c.buildConfiguration();		
+		MyGraph g = new MyGraph(conf);
+		g.visualize("init");
+		//System.exit(0);
 		conf.buildGraphicStrings(null);
 		buildGraph(conf.buildGraphicStrings(null), resultDir+"/InitialFramework");
 		String completeInputFile = conf.createCompleteInputFile();
