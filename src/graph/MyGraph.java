@@ -10,6 +10,9 @@ import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -53,7 +56,8 @@ public class MyGraph {
 	
 	public void visualize(String label) {
 		Layout<MyNode, MyEdge> layout = new CircleLayout<MyNode, MyEdge>(g);
-		layout.setSize(new Dimension(300,300)); // sets the initial size of the space
+		layout.setSize(new Dimension(350,350)); // sets the initial size of the space
+		
 		BasicVisualizationServer<MyNode,MyEdge> vv = new BasicVisualizationServer<MyNode,MyEdge>(layout);
 		
 		Transformer<MyNode,Paint> vertexPaint = new Transformer<MyNode,Paint>() {
@@ -65,12 +69,22 @@ public class MyGraph {
             	return Color.RED;
             }
         };  
-                
-		vv.setPreferredSize(new Dimension(350,350)); //Sets the viewing area size
+        
+        Transformer<MyNode,Shape> vertexSize = new Transformer<MyNode,Shape>(){
+            public Shape transform(MyNode i){
+                Ellipse2D circle = new Ellipse2D.Double(-15, -15, 30, 30);
+                // in this case, the vertex is twice as large
+                if(i.arg.isAccepted()) return AffineTransform.getScaleInstance(1.1, 1.1).createTransformedShape(circle);
+                else return circle;
+            }
+        };
+        
+		vv.setPreferredSize(new Dimension(400,400)); //Sets the viewing area size
 		
 		vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
-        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.S);
+		vv.getRenderContext().setVertexShapeTransformer(vertexSize);
+		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<MyNode>());
+        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
 		
 		JFrame frame = new JFrame(label);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

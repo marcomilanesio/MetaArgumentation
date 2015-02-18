@@ -36,47 +36,12 @@ public class MainClass {
 		Configuration conf = c.buildConfiguration();		
 		MyGraph g = new MyGraph(conf);
 		g.visualize("init");
-		//System.exit(0);
-		//conf.buildGraphicStrings(null);
-		//buildGraph(conf.buildGraphicStrings(null), resultDir+"/InitialFramework");
 		String completeInputFile = conf.createCompleteInputFile();
 		MetaArgumentationFramework maf = new MetaArgumentationFramework(conf);
 		@SuppressWarnings("unchecked")
 		ArrayList<Argument> preferred = maf.computePreferredExtension(conargExe, completeInputFile);
 		g.addResult(preferred);
 		g.visualize("final");
-		//buildGraph(conf.buildGraphicStrings(preferred), resultDir+"/EndingFramework");
 	}		
-
-	private static void buildGraph(ArrayList<String> graphicString, String outFileName) 
-	{
-		GraphViz gv = new GraphViz();
-		gv.addln(gv.start_graph());
-		for (String line: graphicString)
-			gv.addln(line);
-		gv.addln(gv.end_graph());
-		String dotSource = gv.getDotSource();
-		String outDotSource = outFileName + ".dot";
-		writeDotToFile(dotSource, outDotSource);
-        String type = "png";
-        File out = new File(outFileName + "." + type);
-        gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
-	}
-
-	private static void writeDotToFile(String dotSource, String outDotSource) {
-		Writer writer = null;
-
-		try {
-		    writer = new BufferedWriter(new OutputStreamWriter(
-		          new FileOutputStream(outDotSource), "utf-8"));
-		    writer.write(dotSource);
-		} catch (IOException ex) {
-		  System.out.println("IOException caught: unable to write dot file.");
-		} finally {
-		   try {writer.close();} catch (Exception ex) {}
-		}
-		
-	}
-	
 
 }

@@ -76,8 +76,6 @@ public class ConfigurationParser {
 	}
 
 	private void updateRelation(Argument[] args) {
-		//for (int j = 0; j < args.length; j++)
-		//	System.out.println((Argument)args[j]);
 		for (int i = 0; i < args.length; i++)
 		{
 			Argument current = args[i];

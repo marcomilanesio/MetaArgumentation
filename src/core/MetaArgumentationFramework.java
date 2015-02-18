@@ -60,7 +60,7 @@ public class MetaArgumentationFramework {
 
 	}
 
-	public ArrayList computePreferredExtension(String conargExe, String inputfile) {
+	public ArrayList<Argument> computePreferredExtension(String conargExe, String inputfile) {
 		Process process;
 		String result = "";
 		try {
