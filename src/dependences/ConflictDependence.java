@@ -56,4 +56,8 @@ public class ConflictDependence implements Dependence {
 		System.arraycopy(B, 0, C, aLen, bLen);
 		return C;
 	}
+	
+	public int getConflictNum(){
+		return startNum;
+	}
 }

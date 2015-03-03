@@ -8,9 +8,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+
 
 public class MetaArgumentationFramework {
 	private HashMap<String, Argument> arguments = new HashMap<String, Argument>();
@@ -62,9 +63,10 @@ public class MetaArgumentationFramework {
 
 	public ArrayList<Argument> computePreferredExtension(String conargExe, String inputfile) {
 		Process process;
+		ArrayList<String> results = new ArrayList<String>();
 		String result = "";
 		try {
-			process = new ProcessBuilder(conargExe,"-e preferred",inputfile).start();
+			process = new ProcessBuilder(conargExe,"-e admissible",inputfile).start();
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
@@ -72,19 +74,42 @@ public class MetaArgumentationFramework {
 			while ((line = br.readLine()) != null) {
 				if (line.startsWith("\"")) {
 					result = line.substring(1,line.length()-1);
+					results.add(result);
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Result: " + result);
+		
+		for (String s: results)
+			System.out.println("Result: " + s);
+		//TODO return more than one result, if any
 		ArrayList<Argument> preferred = new ArrayList<Argument>();
 		for (String argName: result.split(" ")) {
 			preferred.add(arguments.get(argName));
 		}
 		return preferred;
 	} 
+	
+	
+	public ArrayList<Argument> findAttacksFromArgument(Argument a){
+		return attacks.get(a.getName());
+	}
+	
+	public ArrayList<Argument> findAttacksToArgument(Argument a){
+		ArrayList<Argument> res = new ArrayList<Argument>();
+		Iterator<HashMap.Entry<String,ArrayList<Argument>>> iter = attacks.entrySet().iterator();
+		while (iter.hasNext()) {
+			HashMap.Entry<String,ArrayList<Argument>> entry = iter.next();
+		    if(entry.getKey() == a.getName()){
+		    	continue;
+		    }
+		    if (entry.getValue().contains(a)){
+		    	res.add(arguments.get(entry.getKey()));
+		    }
+		}
+		return res;		
+	}
 	
 	/*
 	@Override

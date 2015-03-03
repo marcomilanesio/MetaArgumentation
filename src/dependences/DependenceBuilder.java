@@ -45,7 +45,7 @@ public class DependenceBuilder {
 	
 
 	private Dependence createEquivalenceDependence(Argument firstArg, Argument secondArg) 
-	{
+	{		
 		Argument[] res = new Argument[2];
 		//System.out.println("Equivalence clause: Equivalence to be set between " + firstArg + " and " + secondArg);
 		//System.out.println("Found num conflicts = " + clauseMap.get("conflict").size());

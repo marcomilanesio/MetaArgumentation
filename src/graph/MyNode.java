@@ -1,7 +1,6 @@
 package graph;
 
 import core.Argument;
-import core.MetaArgument;
 
 public class MyNode {
 	Argument arg;
@@ -12,11 +11,5 @@ public class MyNode {
 	
 	public String toString(){
 		return this.arg.getName();
-		/*
-		if (MetaArgument.class.isInstance(this.arg))
-			return this.arg.getName();
-		else
-			return this.arg.getName()+" ["+this.arg.getValue()+"]";
-		*/
 	}
 }

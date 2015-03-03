@@ -97,7 +97,7 @@ public class MyGraph {
             BufferedImage image = new BufferedImage(vv.getWidth(), vv.getHeight(), BufferedImage.TYPE_INT_RGB);
             Graphics2D graphics2D = image.createGraphics();
             frame.paint(graphics2D);
-            ImageIO.write(image,"jpeg", new File("./results/"+label+".jpeg"));
+            ImageIO.write(image,"png", new File("./results/"+label+".png"));
         }
         catch(Exception exception)
         {

@@ -1,34 +1,34 @@
 package dependences;
 import core.Argument;
+import core.MetaArgument;
 
 
 public class EquivalenceDependence implements Dependence {
 
 	private Argument firstArg;
 	private Argument secondArg;
-	private ConflictDependence conflict;
+	private MetaArgument mz;
 	
-	public EquivalenceDependence(Argument arg1, Argument arg2, ConflictDependence c)
+	public EquivalenceDependence(Argument arg1, Argument arg2)
 	{
 		firstArg = arg1;
 		secondArg = arg2;
-		conflict = c;
 	}
 	
 	@Override
-	public void buildDependence(int i) { }
+	public void buildDependence(int i) { 
+		mz = new MetaArgument("z");
+		firstArg.addAttack(mz);
+		mz.addAttack(secondArg);
+	}
 
 	@Override
 	public Argument[] getInvolvedArguments() {
-		Argument[] res = new Argument[2];
+		Argument[] res = new Argument[3];
 		res[0] = firstArg;
 		res[1] = secondArg;
+		res[2] = mz;
 		return res;
-	}
-	
-	public ConflictDependence getConflict()
-	{
-		return conflict;
 	}
 
 }

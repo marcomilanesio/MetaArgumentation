@@ -1,11 +1,6 @@
 import graph.MyGraph;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 
 import core.Configuration;
@@ -33,12 +28,11 @@ public class MainClass {
 		String inputfileName = args[0];
 		String conargExe = "./conarg/conarg_gecode64";
 		ConfigurationParser c = new ConfigurationParser(inputfileName);
-		Configuration conf = c.buildConfiguration();		
+		Configuration conf = c.buildConfiguration();
 		MyGraph g = new MyGraph(conf);
 		g.visualize("init");
 		String completeInputFile = conf.createCompleteInputFile();
 		MetaArgumentationFramework maf = new MetaArgumentationFramework(conf);
-		@SuppressWarnings("unchecked")
 		ArrayList<Argument> preferred = maf.computePreferredExtension(conargExe, completeInputFile);
 		g.addResult(preferred);
 		g.visualize("final");

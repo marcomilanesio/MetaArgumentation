@@ -9,9 +9,9 @@ import java.util.regex.Pattern;
 
 import core.Argument;
 import core.Configuration;
-
 import dependences.Dependence;
 import dependences.DependenceBuilder;
+import dependences.EquivalenceDependence;
 
 public class ConfigurationParser {
 
@@ -62,16 +62,11 @@ public class ConfigurationParser {
 		Set<String> clauseNames = dependences.keySet();
 		for (String clauseName: clauseNames)
 		{
-			if (clauseName.equals("equivalence"))
-				continue;
-			else
+			for (Dependence c: dependences.get(clauseName))
 			{
-				for (Dependence c: dependences.get(clauseName))
-				{
-					Argument[] args = c.getInvolvedArguments();
-					updateRelation(args);
-				}	
-			}
+				Argument[] args = c.getInvolvedArguments();
+				updateRelation(args);
+			}	
 		}
 	}
 
@@ -144,8 +139,14 @@ public class ConfigurationParser {
 				{
 					continue;
 				}
-				if (dependence_patterns[i].equals("equivalence"))
+				if (dependence_patterns[i].equals("equivalence")){
 					dependences.get("conflict").add(d);
+					if (! dependences.containsKey(dependence_patterns[i]))
+						dependences.put(dependence_patterns[i], new ArrayList<Dependence>());
+					EquivalenceDependence e = new EquivalenceDependence(firstArg,secondArg);
+					e.buildDependence(0);
+					dependences.get(dependence_patterns[i]).add(e);
+				}		
 				else 
 				{
 					if (! dependences.containsKey(dependence_patterns[i]))
