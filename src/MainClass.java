@@ -2,6 +2,8 @@ import graph.MyGraph;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import core.Configuration;
 import core.MetaArgumentationFramework;
@@ -33,9 +35,16 @@ public class MainClass {
 		g.visualize("init");
 		String completeInputFile = conf.createCompleteInputFile();
 		MetaArgumentationFramework maf = new MetaArgumentationFramework(conf);
-		ArrayList<Argument> preferred = maf.computePreferredExtension(conargExe, completeInputFile);
-		g.addResult(preferred);
-		g.visualize("final");
+		HashMap<String, ArrayList<Argument>> preferred = maf.computeExtension(conargExe, completeInputFile, "admissible");
+		Iterator<HashMap.Entry<String,ArrayList<Argument>>> iter = preferred.entrySet().iterator();
+		int i = 0;
+		while (iter.hasNext()) {
+			HashMap.Entry<String,ArrayList<Argument>> entry = iter.next();
+			g.addResult(entry.getValue(), conf);
+		    g.visualize("Solution "+i);
+		    i++;
+		    g.resetView(conf);
+		}
 	}		
 
 }

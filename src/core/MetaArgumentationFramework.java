@@ -61,12 +61,12 @@ public class MetaArgumentationFramework {
 
 	}
 
-	public ArrayList<Argument> computePreferredExtension(String conargExe, String inputfile) {
+	public HashMap<String, ArrayList<Argument>> computeExtension(String conargExe, String inputfile, String extension) {
 		Process process;
 		ArrayList<String> results = new ArrayList<String>();
 		String result = "";
 		try {
-			process = new ProcessBuilder(conargExe,"-e admissible",inputfile).start();
+			process = new ProcessBuilder(conargExe,"-e "+extension,inputfile).start();
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
@@ -81,14 +81,29 @@ public class MetaArgumentationFramework {
 			e.printStackTrace();
 		}
 		
-		for (String s: results)
-			System.out.println("Result: " + s);
-		//TODO return more than one result, if any
-		ArrayList<Argument> preferred = new ArrayList<Argument>();
-		for (String argName: result.split(" ")) {
-			preferred.add(arguments.get(argName));
+		HashMap<String, ArrayList<Argument>> preferredMap = new HashMap<String, ArrayList<Argument>>();
+		for (String s: results) {
+			String key = s.trim();
+			if (key.equals("")) {
+				preferredMap.put("empty", null);
+			}
+			else {
+				ArrayList<Argument> preferred = new ArrayList<Argument>();
+				for (String argName: key.split(" ")) {
+					preferred.add(arguments.get(argName));
+				}
+				preferredMap.put(key, preferred);
+			}
 		}
-		return preferred;
+		
+		return preferredMap;
+		
+		//TODO return more than one result, if any
+		//ArrayList<Argument> preferred = new ArrayList<Argument>();
+		//for (String argName: result.split(" ")) {
+		//	preferred.add(arguments.get(argName));
+		//}
+		//return preferred;
 	} 
 	
 	

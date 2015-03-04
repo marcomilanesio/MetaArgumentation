@@ -24,10 +24,10 @@ public class EquivalenceDependence implements Dependence {
 
 	@Override
 	public Argument[] getInvolvedArguments() {
-		Argument[] res = new Argument[3];
+		Argument[] res = new Argument[2];
 		res[0] = firstArg;
 		res[1] = secondArg;
-		res[2] = mz;
+		//res[2] = mz;
 		return res;
 	}
 

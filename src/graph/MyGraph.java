@@ -6,6 +6,7 @@ import core.MetaArgument;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -21,6 +22,7 @@ import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
 
+import dependences.Dependence;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
@@ -36,9 +38,19 @@ public class MyGraph {
 	public MyGraph(Configuration conf){
 		g = new DirectedSparseMultigraph<MyNode, MyEdge>();
 		for (Argument a: conf.getArguments().values()){
+			if (MetaArgument.class.isInstance(a)) continue;
 			nodes.put(a.getName(), new MyNode(a));
 		}
 		
+		for (Entry<String, ArrayList<Dependence>> entry : conf.getClauses().entrySet()) {
+			String depName = entry.getKey();
+			for (Dependence d: entry.getValue()){
+				MyNode first = nodes.get(d.getInvolvedArguments()[0].getName());
+				MyNode second = nodes.get(d.getInvolvedArguments()[1].getName());
+				g.addEdge(new MyEdge(first,second,depName), first, second);
+			}
+		}
+		/*
 		for (HashMap.Entry<String, ArrayList<Argument>> entry : conf.getAttacks().entrySet()) {
 			String attName = entry.getKey();
 			ArrayList<Argument> value = entry.getValue();
@@ -48,6 +60,7 @@ public class MyGraph {
 				g.addEdge(new MyEdge(att,def), att, def);
 			}
 		}
+		*/
 	}
 	
 	public void addEdge(MyEdge e){
@@ -84,6 +97,7 @@ public class MyGraph {
 		vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 		vv.getRenderContext().setVertexShapeTransformer(vertexSize);
 		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<MyNode>());
+		vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<MyEdge>());
         vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
 		
 		JFrame frame = new JFrame(label);
@@ -106,11 +120,18 @@ public class MyGraph {
 		
 	}
 
-	public void addResult(ArrayList<Argument> preferred) {
+	public void addResult(ArrayList<Argument> preferred, Configuration conf) {
+		if (preferred == null) return;
 		for (Argument a: preferred) {
 			a.setAccepted(true);
 		}
 		
+	}
+	
+	public void resetView(Configuration conf){
+		for (Argument x: conf.getArguments().values()){
+			x.setAccepted(false);
+		}
 	}
 	
 }
