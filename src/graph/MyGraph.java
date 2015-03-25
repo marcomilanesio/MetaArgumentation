@@ -9,16 +9,18 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.awt.Dimension;
 import java.awt.Color;
-import java.awt.Graphics2D;
+//import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
 
@@ -26,9 +28,12 @@ import dependences.Dependence;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+//import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
+import edu.uci.ics.jung.visualization.VisualizationImageServer;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+
 
 public class MyGraph {
 	HashMap<String, MyNode> nodes = new HashMap<String, MyNode>();
@@ -48,19 +53,10 @@ public class MyGraph {
 				MyNode first = nodes.get(d.getInvolvedArguments()[0].getName());
 				MyNode second = nodes.get(d.getInvolvedArguments()[1].getName());
 				g.addEdge(new MyEdge(first,second,depName), first, second);
+				if (depName.equals("conflict"))
+					g.addEdge(new MyEdge(second,first,depName), second, first);
 			}
 		}
-		/*
-		for (HashMap.Entry<String, ArrayList<Argument>> entry : conf.getAttacks().entrySet()) {
-			String attName = entry.getKey();
-			ArrayList<Argument> value = entry.getValue();
-			MyNode att = nodes.get(attName);
-			for (Argument d: value){
-				MyNode def = nodes.get(d.getName());
-				g.addEdge(new MyEdge(att,def), att, def);
-			}
-		}
-		*/
 	}
 	
 	public void addEdge(MyEdge e){
@@ -71,7 +67,10 @@ public class MyGraph {
 		Layout<MyNode, MyEdge> layout = new CircleLayout<MyNode, MyEdge>(g);
 		layout.setSize(new Dimension(350,350)); // sets the initial size of the space
 		
-		BasicVisualizationServer<MyNode,MyEdge> vv = new BasicVisualizationServer<MyNode,MyEdge>(layout);
+		VisualizationViewer<MyNode,MyEdge> vv = new VisualizationViewer<MyNode,MyEdge>(layout);
+		VisualizationImageServer<MyNode, MyEdge> vis = 
+				new VisualizationImageServer<MyNode, MyEdge>(vv.getGraphLayout(), vv.getGraphLayout().getSize());
+		vis.setBackground(Color.WHITE);
 		
 		Transformer<MyNode,Paint> vertexPaint = new Transformer<MyNode,Paint>() {
             public Paint transform(MyNode n) {
@@ -83,6 +82,12 @@ public class MyGraph {
             }
         };  
         
+        Transformer<MyNode,Paint> initVertexPaint = new Transformer<MyNode,Paint>() {
+            public Paint transform(MyNode n) {
+            	return Color.WHITE;
+            }
+        };
+        
         Transformer<MyNode,Shape> vertexSize = new Transformer<MyNode,Shape>(){
             public Shape transform(MyNode i){
                 Ellipse2D circle = new Ellipse2D.Double(-15, -15, 30, 30);
@@ -92,36 +97,35 @@ public class MyGraph {
             }
         };
         
-		vv.setPreferredSize(new Dimension(400,400)); //Sets the viewing area size
-		
-		vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-		vv.getRenderContext().setVertexShapeTransformer(vertexSize);
-		vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<MyNode>());
-		vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<MyEdge>());
-        vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
-		
-		JFrame frame = new JFrame(label);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(vv);
-		frame.pack();
-		frame.setVisible(true); 
-		
-		try
-        {
-            BufferedImage image = new BufferedImage(vv.getWidth(), vv.getHeight(), BufferedImage.TYPE_INT_RGB);
-            Graphics2D graphics2D = image.createGraphics();
-            frame.paint(graphics2D);
-            ImageIO.write(image,"png", new File("./results/"+label+".png"));
-        }
-        catch(Exception exception)
-        {
+        if (label.equals("init"))
+        	vis.getRenderContext().setVertexFillPaintTransformer(initVertexPaint);
+        else
+        	vis.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+        
+		vis.getRenderContext().setVertexShapeTransformer(vertexSize);
+		vis.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<MyNode>());
+		vis.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<MyEdge>());
+        vis.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
+        
+        BufferedImage image = (BufferedImage) vis.getImage(
+        	    new Point2D.Double(vv.getGraphLayout().getSize().getWidth() / 2,
+        	    vv.getGraphLayout().getSize().getHeight() / 2),
+        	    new Dimension(vv.getGraphLayout().getSize()));
+
+        File outputfile = new File("./results/"+label+".png");
+        try {
+        	ImageIO.write(image,"png", outputfile);
+        } catch (IOException e) {
             System.out.println("Unable to save image");
         }
-		
+        
 	}
 
 	public void addResult(ArrayList<Argument> preferred, Configuration conf) {
-		if (preferred == null) return;
+		if (preferred == null) {
+			this.resetView(conf);
+			return;
+		}
 		for (Argument a: preferred) {
 			a.setAccepted(true);
 		}

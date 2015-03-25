@@ -35,7 +35,7 @@ public class MainClass {
 		g.visualize("init");
 		String completeInputFile = conf.createCompleteInputFile();
 		MetaArgumentationFramework maf = new MetaArgumentationFramework(conf);
-		HashMap<String, ArrayList<Argument>> preferred = maf.computeExtension(conargExe, completeInputFile, "admissible");
+		HashMap<String, ArrayList<Argument>> preferred = maf.computeExtension(conargExe, completeInputFile, "preferred");
 		Iterator<HashMap.Entry<String,ArrayList<Argument>>> iter = preferred.entrySet().iterator();
 		int i = 0;
 		while (iter.hasNext()) {

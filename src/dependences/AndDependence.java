@@ -23,10 +23,10 @@ public class AndDependence implements Dependence {
 	}
 
 	public Argument[] getInvolvedArguments() {
-		Argument[] res = new Argument[2];
+		Argument[] res = new Argument[3];
 		res[0] = firstArg;
 		res[1] = secondArg;
-		//res[2] = t;
+		res[2] = t;
 		return res;
 	}
 

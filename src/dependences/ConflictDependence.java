@@ -45,8 +45,8 @@ public class ConflictDependence implements Dependence {
 		Argument[] res = new Argument[2];
 		res[0] = firstArg;
 		res[1] = secondArg;
-		return res;
-		//return concat(res, conflictMetaArguments);
+		//return res;
+		return concat(res, conflictMetaArguments);
 	}
 
 	private Argument[] concat(Argument[] A, Argument[] B) {
